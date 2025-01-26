@@ -1,0 +1,20 @@
+{
+  "name": "appointment-scheduling",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node build/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fastify": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.10",
+    "typescript": "^5.7.3"
+  }
+}
