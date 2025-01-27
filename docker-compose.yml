@@ -5,7 +5,7 @@ services:
     depends_on:
       - mysql
     ports:
-      - 3000:3000
+      - 3339:3339
     networks:
       - app-network-node
   mysql:

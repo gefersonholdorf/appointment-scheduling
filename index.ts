@@ -2,17 +2,23 @@ import fastify from "fastify"
 import dotenv from "dotenv"
 import { db } from "./src/config/data-source"
 import 'reflect-metadata';
+import { personRoutes } from "./src/routes/person.routes";
 
-const app = fastify()
+export const app = fastify()
 
 dotenv.config()
 
 const port = Number(process.env.PORT)
 
-app.get('/status', (request, response) => {
+app.register(personRoutes)
+
+app.get('/', (request, response) => {
+    console.log('Acessou')
     response.status(200).send('Aplicação rodando')
 })
 
+
+//Iniciando BD
 async function startDb() {
 
      try {
@@ -24,10 +30,16 @@ async function startDb() {
      }
  }
 
+// Iniciando Servidor
 app.listen({
-    port: port | 3000
-}, () => {
-    console.log(`Aplicação rodando na porta ${port}`)
+    host: '0.0.0.0',
+    port: port ?? 3000
+}, (err, address) => {
+    if (err) {
+        console.log(err)
+        process.exit(1)
+    }
+    console.log(`Aplicação rodando na porta ${port}, ${address}`)
     
     startDb()
 })

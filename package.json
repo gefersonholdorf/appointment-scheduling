@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "class-validator": "^0.14.1",
     "dotenv": "^16.4.7",
     "fastify": "^5.2.1",
     "mysql2": "^3.12.0",

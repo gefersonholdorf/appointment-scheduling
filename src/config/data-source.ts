@@ -1,5 +1,7 @@
 import { DataSource } from "typeorm";
 import dotenv from "dotenv";
+import { PersonEntity } from "../models/person.entity";
+import { AppointmentEntity } from "../models/appointment.entity";
 
 dotenv.config();
 
@@ -11,5 +13,5 @@ export const db = new DataSource({
     password:process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE || "appointment-scheduling",
     synchronize:true,
-    entities: []
+    entities: [PersonEntity, AppointmentEntity]
 })
