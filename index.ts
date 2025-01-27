@@ -3,6 +3,7 @@ import dotenv from "dotenv"
 import { db } from "./src/config/data-source"
 import 'reflect-metadata';
 import { personRoutes } from "./src/routes/person.routes";
+import { appointmentRoutes } from "./src/routes/appointment.routes";
 
 export const app = fastify()
 
@@ -11,6 +12,7 @@ dotenv.config()
 const port = Number(process.env.PORT)
 
 app.register(personRoutes)
+app.register(appointmentRoutes)
 
 app.get('/', (request, response) => {
     console.log('Acessou')

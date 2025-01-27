@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PersistedEntityNotFoundError, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PersistedEntityNotFoundError, PrimaryGeneratedColumn, Timestamp } from "typeorm";
 import { PersonEntity } from "./person.entity";
 
 export type StatusAppointment = 'Free' | 'Busy'
@@ -12,14 +12,16 @@ export class AppointmentEntity {
     @Column()
     status : StatusAppointment
 
-    @Column()
+    @Column({
+        type: "datetime"
+    })
     data : Date
 
     @ManyToOne(() => PersonEntity, (client) => client.id)
     clientId : PersonEntity
 
     @ManyToOne(() => PersonEntity, (professional) => professional.id)
-    professionalId : PersonEntity
+    professionalId ?: PersonEntity
 
     constructor(status : StatusAppointment, data : Date, clientId : PersonEntity, professionalId : PersonEntity) {
         this.status = status,

@@ -13,7 +13,7 @@ export class PersonController {
         try {
             await personService.createPerson(createPerson)
 
-            reply.status(201).send('Pessoa adicionada com sucesso')
+            reply.status(201).send('Pessoa adicionada com sucesso!')
         } catch (error) {
             console.log(error)
             reply.status(500).send(error)

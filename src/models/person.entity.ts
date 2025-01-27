@@ -1,5 +1,4 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { AppointmentEntity } from './appointment.entity';
 
 export type PersonType = 'Client' | 'Professional'
 
