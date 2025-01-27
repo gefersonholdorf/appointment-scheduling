@@ -45,4 +45,15 @@ export class AppointmentController {
             reply.status(500).send(error)
         }
     }
+
+    public async findAllAppointments(request : FastifyRequest, reply : FastifyReply) {
+        try {
+            const appointments = await appointmentService.listAppointments()
+
+            return reply.status(200).send(appointments)
+        } catch (error) {
+            console.log(error)
+            reply.status(500).send(error)
+        }
+    }
 }

@@ -9,6 +9,6 @@ export class CreatePersonDTO {
     @IsEmail()
     email !: string
 
-    @IsNumber()
+    @IsString()
     typePerson !: PersonType
 }

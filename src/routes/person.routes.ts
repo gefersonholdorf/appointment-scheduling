@@ -5,4 +5,5 @@ const personController = new PersonController()
 
 export async function personRoutes(fastify : FastifyInstance) {
     fastify.post('/create-person', personController.createPerson)
+    fastify.get('/persons', personController.findAll)
 }

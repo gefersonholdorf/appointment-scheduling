@@ -11,7 +11,11 @@ export class PersonController {
         console.log(createPerson)
 
         try {
-            await personService.createPerson(createPerson)
+            const result = await personService.createPerson(createPerson)
+
+            if (result?.status == 500) {
+                return reply.status(500).send(result.description)
+            }
 
             reply.status(201).send('Pessoa adicionada com sucesso!')
         } catch (error) {
@@ -19,5 +23,16 @@ export class PersonController {
             reply.status(500).send(error)
         }
 
+    }
+
+    public async findAll(request : FastifyRequest, reply : FastifyReply) {
+        try {
+            const persons = await personService.findAll()
+
+            return reply.status(200).send(persons)
+        } catch (error) {
+            console.log(error)
+            reply.status(500).send(error)
+        }
     }
 }
