@@ -1,25 +1,18 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-
-export type PersonType = 'Client' | 'Professional'
+import { IPerson, PersonType } from '../interfaces/IPerson.interface';
 
 @Entity('persons')
-export class PersonEntity {
+export class PersonEntity{
 
   @PrimaryGeneratedColumn()
   id !: number;
 
   @Column()
-  name : string;
+  name !: string;
 
   @Column()
-  email : string
+  email !: string
 
   @Column()
-  typePerson : PersonType
-
-  constructor(name : string, email : string, typePerson : PersonType) {
-    this.name = name,
-    this.email = email,
-    this.typePerson = typePerson
-  }
+  typePerson !: PersonType
 }

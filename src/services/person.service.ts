@@ -1,48 +1,40 @@
+import { Repository } from "typeorm";
 import { db } from "../config/data-source";
 import { CreatePersonDTO } from "../dtos/create-person.dto";
-import { PersonEntity, PersonType } from "../models/person.entity";
+import { PersonEntity } from "../models/person.entity";
+import { PersonRepository } from "../repositories/person.repository";
 
 export class PersonService {
-    private personRepository = db.getRepository(PersonEntity)
+    private personRepository : PersonRepository
+
+    constructor() {
+        this.personRepository = new PersonRepository()
+    }
 
     public async createPerson(createPerson : CreatePersonDTO) {
 
         if (!createPerson.name || !createPerson.email || !createPerson.typePerson) {
-            return {
-                status: 500,
-                description: "Erro ao criar Pessoa! Campo nome, email e tipo de pessoa obrigatórios!"
-            }
+            throw new Error('Erro ao criar Pessoa! Campo nome, email e tipo de pessoa obrigatórios!')
         }
 
-        if (createPerson.typePerson != "Client") {
-            if (createPerson.typePerson != "Professional") {
-                return {
-                    status: 500,
-                    description: "O tipo de pessoa deve ser Client ou Professional!"
-                }
-            }
+        if (!["Client", "Professional"].includes(createPerson.typePerson)) {
+            throw new Error('O tipo de pessoa deve ser Client ou Professional!')
         }
 
         try {
-            const person = await this.personRepository.create({
-                ...createPerson
-            })
-            await this.personRepository.save(person)
-
-            return 
+            return await this.personRepository.createPerson(createPerson)
+            
         } catch (error) {
-            console.log(error)
-            return
+            throw new Error('Erro ao criar Pessoa!')
         }
     }
 
     public async findAll() {
         try {
-            return await this.personRepository.find()
+            return await this.personRepository.findAll()
 
         } catch (error) {
-            console.log(error)
-            return
+            throw new Error('Erro ao listar as Pessoas!')
         }
     }
 }

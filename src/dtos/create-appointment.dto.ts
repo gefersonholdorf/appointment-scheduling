@@ -1,11 +1,12 @@
 import { IsDateString, IsNumber, IsString } from "class-validator";
 import { Timestamp } from "typeorm";
 
-export class CreateClientAppointmentDTO {
+export class CreateAppointmentDTO {
     
     @IsDateString()
     data !: Timestamp
 
     @IsNumber()
-    clientId !: number
+    professionalId !: number
+    
 }

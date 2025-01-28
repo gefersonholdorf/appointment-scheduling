@@ -1,59 +1,100 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { AppointmentService } from "../services/appointment.service";
-import { CreateProfessionalAppointmentDTO } from "../dtos/create-professional-appointment.dto";
-import { CreateClientAppointmentDTO } from "../dtos/create-client-appointment.dto";
+import { CreateAppointmentDTO } from "../dtos/create-appointment.dto";
 
-interface MyParams {
+export interface MyParams {
     id : number
 }
 
-const appointmentService = new AppointmentService()
-
 export class AppointmentController {
 
-    public async createAppointmentProfessional(request : FastifyRequest, reply : FastifyReply) {
-        const appointment : CreateProfessionalAppointmentDTO = request.body as CreateProfessionalAppointmentDTO
+    private appointmentService : AppointmentService
+
+    constructor() {
+        this.appointmentService = new AppointmentService()
+    }
+
+    public async createAppointment(request : FastifyRequest, reply : FastifyReply) : Promise<void>{
+        const appointment : CreateAppointmentDTO = request.body as CreateAppointmentDTO
 
         try {
-            const result = await appointmentService.createAppointmentProfessional(appointment)
+            const result = await this.appointmentService.createAppointment(appointment)
 
-            if (result?.status == 404) {
-                return reply.status(404).send(result.descriprion)
-            }
+            reply.status(201).send({
+                status: "Horário adicionado com sucesso!",
+                appointment: result
+            })
 
-            return reply.status(201).send("Agendamento adicionado com sucesso!")
         } catch (error) {
             console.log(error)
-            reply.status(500).send(error)
+            reply.status(500).send(`Erro ao criar horário - ${error}`)
         }
     }
 
     public async createAppointmentClient(request : FastifyRequest<{ Params: MyParams}>, reply : FastifyReply) {
-        const appointment : CreateClientAppointmentDTO = request.body as CreateClientAppointmentDTO
-        const id : number = Number(request.params.id)
+        const appointmentId : number = Number(request.params.id)
+        const { clientId } = request.body as {clientId : number}
 
         try {
-            const result = await appointmentService.createAppointmentClient(id, appointment)
+            const result = await this.appointmentService.createAppointmentClient(appointmentId, clientId)
 
-            if (result?.status == 404) {
-                return reply.status(404).send(result.descriprion)
-            }
-
-            return reply.status(201).send("Agendamento marcado com sucesso!")
+            return reply.status(201).send({
+                status: "Agendamento marcado com sucesso!",
+                appointment: result
+            })
         } catch (error) {
             console.log(error)
-            reply.status(500).send(error)
+            reply.status(500).send(`Erro ao criar agendamento - ${error}`)
         }
     }
 
     public async findAllAppointments(request : FastifyRequest, reply : FastifyReply) {
         try {
-            const appointments = await appointmentService.listAppointments()
+            const appointments = await this.appointmentService.findAppointments()
 
             return reply.status(200).send(appointments)
+
         } catch (error) {
             console.log(error)
-            reply.status(500).send(error)
+            reply.status(500).send(`Erro ao listar agendamentos - ${error}`)
         }
     }
+
+    public async findAppointmentsProfessional(request : FastifyRequest<{Params: MyParams}>, reply : FastifyReply) {
+        const professionalId : number = Number(request.params.id)
+
+        try {
+            
+            const result = await this.appointmentService.findAppointmentsProfessionais(professionalId)
+
+            reply.status(200).send(result)
+
+        } catch (error) {
+            console.log(error)
+            reply.status(500).send(`Erro ao listar agendamentos - ${error}`)
+        }
+    }
+
+    // public async cancelAppointment(request : FastifyRequest<{Params : MyParams}>, reply : FastifyReply) {
+    //     const id : number = request.params.id
+    //     const body : {clientId : number} = request.body as {clientId : number}
+
+    //     try {
+    //         const result = await appointmentService.cancelAppointment(id, body.clientId)
+
+    //         if (result.status == 404) {
+    //             return reply.status(400).send(result.description)
+    //         }
+
+    //         return reply.status(200).send({
+    //             status: result.description,
+    //             appointmentCancel: result.appointmentCancel,
+    //             newStatus: result.newDescription,
+    //             newAppointment: result.newAppointment
+    //         })
+    //     } catch (error) {
+    //         console.log(error)
+    //         reply.status(500).send(error)
+    //     }
+    // }
 }

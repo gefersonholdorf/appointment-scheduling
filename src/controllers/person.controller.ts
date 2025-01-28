@@ -1,38 +1,44 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { CreatePersonDTO } from "../dtos/create-person.dto";
+import { PersonRepository } from "../repositories/person.repository";
 import { PersonService } from "../services/person.service";
-
-const personService = new PersonService()
+import { PersonEntity } from "../models/person.entity";
 
 export class PersonController {
 
-    public async createPerson(request : FastifyRequest, reply : FastifyReply) {
+    private personService : PersonService
+
+    constructor() {
+        this.personService = new PersonService()
+    }
+
+    public async createPerson(request : FastifyRequest, reply : FastifyReply) : Promise<void>{
         const createPerson : CreatePersonDTO = request.body as CreatePersonDTO
-        console.log(createPerson)
 
         try {
-            const result = await personService.createPerson(createPerson)
+            const person = await this.personService.createPerson(createPerson)
 
-            if (result?.status == 500) {
-                return reply.status(500).send(result.description)
-            }
+            reply.status(201).send({
+                status: "Pessoa cadastrada com sucesso",
+                person: person
+            })
 
-            reply.status(201).send('Pessoa adicionada com sucesso!')
         } catch (error) {
             console.log(error)
-            reply.status(500).send(error)
+            reply.status(400).send(`Erro ao criar Pessoa - ${error}`)
         }
 
     }
 
-    public async findAll(request : FastifyRequest, reply : FastifyReply) {
+    public async findAll(request : FastifyRequest, reply : FastifyReply) : Promise<PersonEntity[] | undefined>{
         try {
-            const persons = await personService.findAll()
+            const persons = await this.personService.findAll()
 
             return reply.status(200).send(persons)
+
         } catch (error) {
             console.log(error)
-            reply.status(500).send(error)
+            reply.status(400).send(`Erro ao listas as Pessoas - ${error}`)
         }
     }
 }

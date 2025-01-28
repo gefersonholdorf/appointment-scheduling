@@ -1,9 +1,11 @@
-import { IsEmail, IsNumber, IsString } from "class-validator";
-import { PersonType } from "../models/person.entity";
+import { IsEmail, IsNumber, IsString, MaxLength, MinLength } from "class-validator";
+import { PersonType } from "../interfaces/IPerson.interface";
 
 export class CreatePersonDTO {
 
     @IsString()
+    @MaxLength(20)
+    @MinLength(3)
     name !: string
 
     @IsEmail()
