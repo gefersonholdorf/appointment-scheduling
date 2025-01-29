@@ -5,14 +5,12 @@ import { AppointmentDTO } from "../dtos/appointment.dto";
 import { NotFoundException } from "../exceptions/exceptions";
 
 export async function appointmentLimitProfessional(request : FastifyRequest, reply : FastifyReply) {
-    const {professionalId} : CreateAppointmentDTO = request.body as CreateAppointmentDTO
+    const {data, professionalId} : CreateAppointmentDTO = request.body as CreateAppointmentDTO
 
     const appointmentRepository = new AppointmentRepository()
 
-    const currentDate = new Date()
-
-    const dateInit = formatDate(currentDate, '00', '00', '00')
-    const dateFinish = formatDate(currentDate, '23', '59', '59')
+    const dateInit = formatDate(data, '00', '00', '00')
+    const dateFinish = formatDate(data, '23', '59', '59')
 
     try {
         
