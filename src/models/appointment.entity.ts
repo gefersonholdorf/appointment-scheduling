@@ -20,5 +20,5 @@ export class AppointmentEntity {
     client ?: number | null
 
     @ManyToOne(() => PersonEntity, (professional) => professional.id)
-    professional ?: number
+    professional !: number
 }

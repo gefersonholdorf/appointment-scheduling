@@ -4,7 +4,7 @@ import { Timestamp } from "typeorm";
 export class CreateAppointmentDTO {
     
     @IsDateString()
-    data !: Timestamp
+    data !: Date
 
     @IsNumber()
     professionalId !: number

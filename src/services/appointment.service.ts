@@ -126,6 +126,13 @@ export class AppointmentService {
 
             await this.appointmentRepository.cancelAppointmentClient(appointmentId)
 
+            const createNewAppointment : CreateAppointmentDTO = {
+                data: appointment.data,
+                professionalId : appointment.professionalId
+            }
+
+            await this.createAppointment(createNewAppointment)
+
             return this.appointmentRepository.findById(appointmentId)
 
         } catch (error) {
