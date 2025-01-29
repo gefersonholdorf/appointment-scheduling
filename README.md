@@ -1,6 +1,6 @@
 <h1> ⚕️ Agendamento de Consultas </h1>
 
-API para clínicas ou profissionais autônomos orgaizarem horários de atendimento com seus clientes.
+API para clínicas ou profissionais autônomos organizarem horários de atendimento com seus clientes.
 
 ## Regras de Negócios(RNs):
   - Cada profissional pode atender até 8 clientes por dia.
@@ -17,10 +17,13 @@ API para clínicas ou profissionais autônomos orgaizarem horários de atendimen
   - Logs para auditoria de alterações em agendamentos.
 
 ## Exemplo:
-  - Profissional cadastra seus horários disponíveis e o cliente reservaum horário.
+  - Profissional cadastra seus horários disponíveis e o cliente reserva/cancela um horário.
 
 ## Rotas:
-  - POST: clients = Cadastro de cliente
-  - POST: appointments = Criar agendamento
-  - GET: /appointments/:id = Listar agendamentos
-  - DELETE: /appointments/:id = Cancelar agendamento
+  - POST: /create-person = Cadastro de Pessoa
+  - GET: /persons = Listar todas as pessoas
+  - POST: /create-appointment = Criar horário disponível
+  - POST: /create-appointment-client/:id = Criar agendamento do Cliente
+  - GET: /appointments = Listar agendamentos
+  - GET: /appointments/:id = Listar agendamentos por Profissional
+  - POST: /cancel-appointment/:id = Cancelar agendamento e Criar novo horário disponível no lugar 
