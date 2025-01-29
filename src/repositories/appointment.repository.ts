@@ -30,6 +30,10 @@ export class AppointmentRepository {
         return result[0] || null
     }
 
+    public async findAppoimentsByDateAndProfessional(professionalId : number, dateInit : string, dateFinish : string) : Promise<AppointmentDTO[] | null> {
+        return await this.repository.query(`select * from appointments where professionalId = ${professionalId} and data between "${dateInit}" and "${dateFinish}"`)
+    }
+
     public async createAppointmentClient(appointmentId : number, clientId : number) : Promise<any> {
         return await this.repository.update(appointmentId, {
             status: "Busy",
