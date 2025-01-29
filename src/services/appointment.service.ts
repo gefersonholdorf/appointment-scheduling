@@ -1,4 +1,5 @@
 import { CreateAppointmentDTO } from "../dtos/create-appointment.dto";
+import { BadRequestException, InvalidPersonTypeClientException, InvalidPersonTypeProfessionalException, NotFoundException } from "../exceptions/exceptions";
 import { AppointmentRepository } from "../repositories/appointment.repository";
 import { PersonRepository } from "../repositories/person.repository";
 
@@ -14,26 +15,27 @@ export class AppointmentService {
 
     // Metodo para criar Agendamento vazio para o Profissional
     public async createAppointment(createAppointment : CreateAppointmentDTO) {
-        try {
 
-            if (!createAppointment.data || !createAppointment.professionalId) {
-                throw new Error('Campos Data e ProfessionalId obrigatórios!')
-            }
+        if (!createAppointment.data || !createAppointment.professionalId) {
+            throw new BadRequestException()
+        }
+
+        try {
 
             const professional = await this.personRepository.findById(createAppointment.professionalId)
 
-            if (professional?.typePerson != "Professional") {
-                throw new Error('Tipo de pessoa deve ser Professional!')
+            if (!professional) {
+                throw new NotFoundException()
             }
 
-            if (!professional) {
-                throw new Error('Profissional não encontrado!')
+            if (professional?.typePerson != "Professional") {
+                throw new InvalidPersonTypeProfessionalException()
             }
 
             return await this.appointmentRepository.createAppointment(createAppointment)
 
         } catch (error) {
-            throw new Error('Erro ao criar Agendamento!')
+            throw error
         }
     }
 
@@ -44,17 +46,17 @@ export class AppointmentService {
             const appointment = await this.appointmentRepository.findById(appointmentId)
 
             if (!appointment) {
-                throw new Error('Agendamento não encontrado!')
+                throw new NotFoundException()
             }
 
             const client = await this.personRepository.findById(clientId)
 
             if (!client) {
-                throw new Error('Cliente não encontrado!')
+                throw new NotFoundException()
             }
 
             if (client.typePerson != "Client") {
-                throw new Error('Tipo de pessoa deve ser Client!')
+                throw new InvalidPersonTypeClientException()
             }         
 
             if (appointment.status == "Busy") {
@@ -66,16 +68,22 @@ export class AppointmentService {
             return await this.appointmentRepository.findById(appointmentId)
 
         } catch (error) {
-            throw new Error('Erro ao marcar um horário!')
+            throw error
         }
     }
 
     public async findAppointments() {
         try {
-           return await this.appointmentRepository.findAll()
+           const appointments = await this.appointmentRepository.findAll()
+
+           if (!appointments) {
+            throw new NotFoundException()
+           }
+
+           return appointments
 
         } catch (error) {
-            throw new Error('Erro ao listar agendamentos')
+            throw error
         }
     }
 
@@ -84,68 +92,44 @@ export class AppointmentService {
             const professional = await this.personRepository.findById(professionalId)
 
             if (!professional) {
-                throw new Error('Profissional não encontrado!')
+                throw new NotFoundException()
             }
 
             if (professional?.typePerson != "Professional") {
-                throw new Error('Tipo de pessoa deve ser Professional!')
+                throw new InvalidPersonTypeProfessionalException()
             }
 
             return await this.appointmentRepository.findByProfessionalId(professionalId)
 
         } catch (error) {
-            throw new Error('Erro ao listar os agendamentos!')
+            throw error
         }
     }
 
-    // public async cancelAppointment(appointmentId : number, clientId : number) {
-    //     try {
-    //         const appointment = await this.appointmentRepository.query(`select * from appointments where id = ${appointmentId}`)
-    //         const appointmentClientId = await this.personRepository.query(`select id from persons where id = ${}`
+    public async cancelAppointmentClient(appointmentId : number, clientId : number) {
+        try {
+            const client = await this.personRepository.findById(clientId)
 
-    //         if (!appointment) {
-    //             throw new Error('Agendamento não encontrado');
-    //         }
+            if (!client) {
+                throw new NotFoundException()
+            }
 
-    //         const client = await this.personRepository.findOneBy({
-    //             id: clientId
-    //         })
+            if (client.typePerson != "Client") {
+                throw new InvalidPersonTypeClientException()
+            }    
 
-    //         console.log(appointment, client) //PAREI AQUI - BUG AO CANCELAR
+            const appointment = await this.appointmentRepository.findById(appointmentId)
 
+            if (!appointment) {
+                throw new NotFoundException()
+            }
 
-    //         if (appointmentClientId.clientIdId != clientId) {
-    //             console.log(appointmentClientId.clientIdId)
-    //             console.log(clientId)
-    //             return {
-    //                 status: 404,
-    //                 description: "Acesso negado!"
-    //             }
-    //         }
+            await this.appointmentRepository.cancelAppointmentClient(appointmentId)
 
-    //         await this.appointmentRepository.update(appointmentId, {
-    //             status: "Cancel"
-    //         })
+            return this.appointmentRepository.findById(appointmentId)
 
-    //         const newAppointment = await this.appointmentRepository.create({
-    //             status: "Free",
-    //             data: appointment.data,
-    //             professionalId: appointment.professionalId
-    //         })
-    //         console.log(newAppointment)
-
-    //         await this.appointmentRepository.save(newAppointment)
-
-    //         return {
-    //             status: 201,
-    //             description: "Agendamento cancelado com sucesso!",
-    //             appointmentCancel: appointment,
-    //             newDescription: "Novo horário disponível!",
-    //             newAppointment: newAppointment
-    //         }
-
-    //     } catch (error) {
-    //         throw new Error('Erro ao cancelar agendamento!')
-    //     }
-    // }
+        } catch (error) {
+            throw error
+        }
+    }
 }

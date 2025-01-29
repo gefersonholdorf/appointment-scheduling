@@ -14,7 +14,8 @@ export class AppointmentRepository {
         const appointment = await this.repository.create({
             status: "Free",
             client: null,
-            ...data
+            professional: data.professionalId,
+            data: data.data
         })
 
         await this.repository.save(appointment)
@@ -23,8 +24,11 @@ export class AppointmentRepository {
     }
 
     public async findById(id : number) : Promise<AppointmentEntity | null> {
-        return await this.repository.findOneBy({
-            id 
+        return await this.repository.findOne({
+            relations: ['client', 'professional'],
+            where: {
+                id
+            }
         })
     }
 
@@ -36,7 +40,9 @@ export class AppointmentRepository {
     }
 
     public async findAll() : Promise<AppointmentEntity[]>{
-        return await this.repository.find()
+        return await this.repository.find({
+            relations: ['client', 'professional'],
+        })
     }
 
     public async findByProfessionalId(professionalId : number) : Promise<AppointmentEntity[]> {
@@ -44,4 +50,11 @@ export class AppointmentRepository {
             professional: professionalId
         })
     }
+
+    public async cancelAppointmentClient(appointmentId : number) : Promise<any> {
+        return await this.repository.update(appointmentId, {
+            status: 'Free',
+            client: null
+        })
+    }   
 }

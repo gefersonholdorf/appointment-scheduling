@@ -27,7 +27,7 @@ export class AppointmentController {
 
         } catch (error) {
             console.log(error)
-            reply.status(500).send(`Erro ao criar horário - ${error}`)
+            reply.status(500).send(error)
         }
     }
 
@@ -44,7 +44,7 @@ export class AppointmentController {
             })
         } catch (error) {
             console.log(error)
-            reply.status(500).send(`Erro ao criar agendamento - ${error}`)
+            reply.status(500).send(error)
         }
     }
 
@@ -56,7 +56,7 @@ export class AppointmentController {
 
         } catch (error) {
             console.log(error)
-            reply.status(500).send(`Erro ao listar agendamentos - ${error}`)
+            reply.status(500).send(error)
         }
     }
 
@@ -71,30 +71,24 @@ export class AppointmentController {
 
         } catch (error) {
             console.log(error)
-            reply.status(500).send(`Erro ao listar agendamentos - ${error}`)
+            reply.status(500).send(error)
         }
     }
 
-    // public async cancelAppointment(request : FastifyRequest<{Params : MyParams}>, reply : FastifyReply) {
-    //     const id : number = request.params.id
-    //     const body : {clientId : number} = request.body as {clientId : number}
+    public async cancelAppointment(request : FastifyRequest<{Params : MyParams}>, reply : FastifyReply) {
+        const appointmentId : number = request.params.id
+        const {clientId} = request.body as {clientId : number}
 
-    //     try {
-    //         const result = await appointmentService.cancelAppointment(id, body.clientId)
+        try {
+            const result = await this.appointmentService.cancelAppointmentClient(appointmentId, clientId)
 
-    //         if (result.status == 404) {
-    //             return reply.status(400).send(result.description)
-    //         }
-
-    //         return reply.status(200).send({
-    //             status: result.description,
-    //             appointmentCancel: result.appointmentCancel,
-    //             newStatus: result.newDescription,
-    //             newAppointment: result.newAppointment
-    //         })
-    //     } catch (error) {
-    //         console.log(error)
-    //         reply.status(500).send(error)
-    //     }
-    // }
+            return reply.status(201).send({
+                status: "Agendamento cancelado com sucesso!",
+                appointment: result
+            })
+        } catch (error) {
+            console.log(error)
+            reply.status(500).send(error)
+        }
+    }
 }

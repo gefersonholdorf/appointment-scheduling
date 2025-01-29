@@ -25,7 +25,7 @@ export class PersonService {
             return await this.personRepository.createPerson(createPerson)
             
         } catch (error) {
-            throw new Error('Erro ao criar Pessoa!')
+            throw error
         }
     }
 
@@ -34,7 +34,7 @@ export class PersonService {
             return await this.personRepository.findAll()
 
         } catch (error) {
-            throw new Error('Erro ao listar as Pessoas!')
+            throw error
         }
     }
 }
