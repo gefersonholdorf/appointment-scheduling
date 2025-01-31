@@ -2,6 +2,12 @@
 
 API para clínicas ou profissionais autônomos organizarem horários de atendimento com seus clientes.
 
+## 🧑‍💻Tecnologias
+  - NodeJS
+  - TypeScript
+  - Fastify
+  - TypeORM
+
 ## Regras de Negócios(RNs):
   - Cada profissional pode atender até 8 clientes por dia.
   - O agendamento só pode ser realizado com pelo menos 24 horas de antecedência.
